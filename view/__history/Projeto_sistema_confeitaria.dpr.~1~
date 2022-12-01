@@ -1,0 +1,23 @@
+program Project_sistema_mae;
+
+uses
+  Vcl.Forms,
+  unitMain in 'unitMain.pas' {formPrincipal},
+  unitPedidos in 'unitPedidos.pas' {formPedidos},
+  unitEditarCardapio in 'unitEditarCardapio.pas' {formEditarCardapio},
+  unitCadastrarNovoPedido in 'unitCadastrarNovoPedido.pas' {formCadastrarNovoPedido},
+  unitDM in 'unitDM.pas' {DM: TDataModule},
+  Unit1 in 'Unit1.pas',
+  Unit2 in 'Unit2.pas' {Form2};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TformPrincipal, formPrincipal);
+  Application.CreateForm(TDM, DM);
+  Application.CreateForm(TForm2, Form2);
+  Application.Run;
+  ReportMemoryLeaksOnShutdown := True;
+end.

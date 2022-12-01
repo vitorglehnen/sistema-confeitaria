@@ -1,0 +1,505 @@
+unit unitCadastrarNovoPedido;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.WinXPickers, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf,
+  FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys,
+  FireDAC.Phys.MySQL, FireDAC.Phys.MySQLDef,
+  FireDAC.VCLUI.Wait, FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf,
+  FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Mask,
+  Vcl.DBCtrls, Vcl.Grids, Vcl.DBGrids, Vcl.Imaging.jpeg, Vcl.Imaging.pngimage;
+
+type
+  TformCadastrarNovoPedido = class(TForm)
+    Label3: TLabel;
+    Label4: TLabel;
+    PageControl: TPageControl;
+    Cadastro: TTabSheet;
+    lblNomeCliente: TLabel;
+    lblEnderecoCliente: TLabel;
+    lblTelefoneCliente: TLabel;
+    lblDataHoraEntrega: TLabel;
+    Image1: TImage;
+    editNomeCliente: TEdit;
+    rdbtClienteRetira: TRadioGroup;
+    editEnderecoCliente: TEdit;
+    btConfirmar: TButton;
+    dataEntrega: TDateTimePicker;
+    horaEntrega: TTimePicker;
+    editTelefoneCliente: TMaskEdit;
+    Produtos: TTabSheet;
+    lblTipoDoProduto: TLabel;
+    lblNomeDoProduto: TLabel;
+    lblTamanhoDoProduto: TLabel;
+    lblTotalDeProdutos: TLabel;
+    lblValorTotal: TLabel;
+    comboTiposDeProduto: TComboBox;
+    comboNomeDoProduto: TComboBox;
+    comboTamanhoDoProduto: TComboBox;
+    btAdicionarProduto: TButton;
+    btFinalizarPedido: TButton;
+    editObservacoes: TEdit;
+    gridCadastroProdutos: TDBGrid;
+    btCancelarPedido: TButton;
+    btEditarCadastro: TButton;
+    procedure rdbtClienteRetiraClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure btConfirmarClick(Sender: TObject);
+    procedure limpaCamposPageCadastro;
+    procedure comboTiposDeProdutoClick(Sender: TObject);
+    procedure alteraNomeDoProduto(tipo_do_produto, tabela,
+                                  tabela_tamanho: string);
+    procedure insereDadosPageCadastro;
+    procedure btAdicionarProdutoClick(Sender: TObject);
+    procedure apagaGridCadastroProdutos;
+    procedure btFinalizarPedidoClick(Sender: TObject);
+    procedure descobreIdCliente;
+    procedure limpaCamposPageProdutos;
+    procedure btCancelarPedidoClick(Sender: TObject);
+    procedure ativaDesativaElementosPageCadastro(condicao: boolean);
+    procedure ativaDesativaElementosPageProdutos(condicao: boolean);
+    procedure btEditarCadastroClick(Sender: TObject);
+    procedure deletaPedidoIncompleto;
+    procedure CadastroShow(Sender: TObject);
+    procedure buscaPrecoProdutoCadastrado;
+    procedure insereProdutoCadastradoDB;
+    procedure dadosGridCadastroProdutos;
+    procedure somaPrecosCadastroProdutos;
+    procedure tipoProdutoComboBox;
+    procedure renovaCamposPageProdutos;
+    procedure validaCbTiposDeProdutoVazia;
+    procedure editTelefoneClienteClick(Sender: TObject);
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+formCadastrarNovoPedido: TformCadastrarNovoPedido;
+id_cliente : integer;
+valor_produto : real;
+
+
+implementation
+
+{$R *.dfm}
+
+uses unitDM;
+
+
+procedure TformCadastrarNovoPedido.alteraNomeDoProduto(tipo_do_produto, tabela,
+                          tabela_tamanho: string);
+begin
+  var query : string;
+  if comboTiposDeProduto.Text = tipo_do_produto then
+    begin
+    with dm.qNomeDoProduto do
+      begin
+        Close;
+        sql.Clear;
+        query := 'select nome from ' + tabela;
+        sql.Text := query;
+        open;
+        dm.qNomeDoProduto.First;
+
+        while not dm.qNomeDoProduto.Eof do
+        begin
+          comboNomeDoProduto.items.Add(dm.qNomeDoProduto['nome']);
+          dm.qNomeDoProduto.Next;
+        end;
+      end;
+
+    with dm.qTamanhoDoProduto do
+      begin
+        Close;
+        sql.clear;
+        query := 'select tamanho from ' + tabela_tamanho + ' ORDER BY preco';
+        sql.Text := query;
+        open;
+        dm.qTamanhoDoProduto.First;
+
+        while not dm.qTamanhoDoProduto.Eof do
+        begin
+          comboTamanhoDoProduto.Items.Add(dm.qTamanhoDoProduto['tamanho']);
+          dm.qTamanhoDoProduto.Next;
+        end;
+
+      end;
+    end;
+end;
+
+procedure TformCadastrarNovoPedido.apagaGridCadastroProdutos;
+begin
+  with dm.qTabelaProdutos do
+  begin
+    sql.clear;
+    sql.add('select * from cadastro_produtos where nome = :pNomeRandom');
+    ParamByName('pNomeRandom').AsString := '';
+    open;
+    gridCadastroProdutos.DataSource := dm.dsTabelaProdutos;
+  end;
+end;
+
+procedure TformCadastrarNovoPedido.ativaDesativaElementosPageCadastro
+                                                            (condicao: boolean);
+begin
+  lblNomeCliente.Enabled := condicao;
+  lblDataHoraEntrega.Enabled := condicao;
+  lblTelefoneCliente.Enabled := condicao;
+  rdbtClienteRetira.ItemIndex := 1;
+  rdbtClienteRetira.Enabled := condicao;
+  editNomeCliente.Enabled := condicao;
+  dataEntrega.Enabled := condicao;
+  horaEntrega.Enabled := condicao;
+  editTelefoneCliente.Enabled := condicao;
+  btConfirmar.Enabled := condicao;
+  if(condicao = true) then
+    begin
+    btEditarCadastro.Enabled := false;
+    end
+  else
+    begin
+    btEditarCadastro.Enabled := true;
+    end;
+
+end;
+
+procedure TformCadastrarNovoPedido.ativaDesativaElementosPageProdutos(
+  condicao: boolean);
+begin
+  gridCadastroProdutos.Enabled := condicao;
+  comboTiposDeProduto.Enabled := condicao;
+  comboNomeDoProduto.Enabled := condicao;
+  comboTamanhoDoProduto.Enabled := condicao;
+  lblTipoDoProduto.Enabled := condicao;
+  lblNomeDoProduto.Enabled := condicao;
+  lblTamanhoDoProduto.Enabled := condicao;
+  btFinalizarPedido.Enabled := condicao;
+  btCancelarPedido.Enabled := condicao;
+  btAdicionarProduto.Enabled := condicao;
+  editObservacoes.Enabled := condicao;
+
+end;
+
+procedure TformCadastrarNovoPedido.btAdicionarProdutoClick(Sender: TObject);
+begin
+  validaCbTiposDeProdutoVazia();
+  buscaPrecoProdutoCadastrado();
+  descobreIdCliente();
+  insereProdutoCadastradoDB();
+  somaPrecosCadastroProdutos();
+  dadosGridCadastroProdutos();;
+  renovaCamposPageProdutos();
+end;
+
+procedure TformCadastrarNovoPedido.btCancelarPedidoClick(Sender: TObject);
+begin
+  if Application.MessageBox('Deseja cancelar este pedido?', 'Cancelar pedido',
+  + MB_ICONQUESTION + MB_YESNO) = MrYes then
+    begin
+    gridCadastroProdutos.Enabled := false;
+    deletaPedidoIncompleto();
+    limpaCamposPageCadastro();
+    limpaCamposPageProdutos();
+    PageControl.ActivePage := Cadastro;
+    ativaDesativaElementosPageCadastro(true);
+    end;
+end;
+
+procedure TformCadastrarNovoPedido.btConfirmarClick(Sender: TObject);
+begin
+//Verifica se a caixa do nome não está vazia
+  if Length(editNomeCliente.Text) = 0 then
+    begin
+      Application.MessageBox('Digite seu nome!', 'Erro', MB_OK);
+      abort;
+    end;
+
+  gridCadastroProdutos.Enabled := True;
+  btEditarCadastro.Enabled:= True;
+  insereDadosPageCadastro();
+  apagaGridCadastroProdutos();
+
+//Troca de página quando valida o cadastro do cliente
+  Pagecontrol.ActivePage := Produtos;
+  btEditarCadastro.Enabled:= True;
+
+  ativaDesativaElementosPageCadastro(false);
+  ativaDesativaElementosPageProdutos(true);
+
+  comboTiposDeProduto.SetFocus;
+end;
+
+procedure TformCadastrarNovoPedido.btEditarCadastroClick(Sender: TObject);
+begin
+  deletaPedidoIncompleto();
+  ativaDesativaElementosPageCadastro(True);
+  ativaDesativaElementosPageProdutos(False);
+end;
+
+procedure TformCadastrarNovoPedido.btFinalizarPedidoClick(Sender: TObject);
+begin
+  if Application.MessageBox('Deseja concluir seu pedido?', 'Concluir pedido',
+    + MB_ICONQUESTION + MB_YESNO) = MrYes then
+    begin
+      PageControl.ActivePage := Cadastro;
+      limpaCamposPageProdutos();
+      limpaCamposPageCadastro();
+      ativaDesativaElementosPageCadastro(True);
+      ativaDesativaElementosPageProdutos(False);
+    end;
+
+end;
+
+procedure TformCadastrarNovoPedido.buscaPrecoProdutoCadastrado;
+var
+  nome_tabela : string;
+begin
+//Faz a separação correspondente de cada DATABASE para resgatar
+  // o valor do produto
+  case comboTiposDeProduto.ItemIndex of
+    0 : nome_tabela := 'precos_sobremesa';
+    1 : nome_tabela := 'precos_tortas_doces';
+    2 : nome_tabela := 'precos_tortas_salgadas';
+  end;
+
+//Busca o valor correspondente de cada produto adicionado
+  with dm.qBuscaPrecoProdutoCadastro do
+  begin
+    sql.clear;
+    sql.add('select preco from ' + nome_tabela
+          + ' where tamanho = :pTamanhoProduto');
+    ParamByName('pTamanhoProduto').AsString := comboTamanhoDoProduto.text;
+    open;
+    valor_produto := dm.qBuscaPrecoProdutoCadastro['preco'];
+  end;
+end;
+
+procedure TformCadastrarNovoPedido.CadastroShow(Sender: TObject);
+begin
+  dataEntrega.Date:= date();
+end;
+
+procedure TformCadastrarNovoPedido.insereProdutoCadastradoDB;
+begin
+  with dm.qCadastroProdutos do
+    begin
+    sql.clear;
+    sql.ADD('INSERT INTO cadastro_produtos(id_cliente, nome_cliente, nome,'
+    + ' tamanho, valor, observacoes) values(:pIdCliente, :pNomeCliente,'
+    + ' :pNomeProduto, :pTamanhoProduto, :pValorProduto, :pObsProduto)');
+
+    ParamByName('pIdCliente').AsInteger := id_cliente;
+    ParamByName('pNomeCliente').AsString := editNomeCliente.Text;
+    ParamByName('pNomeProduto').AsString := '(' + comboTiposDeProduto.Text
+                                         + ')' + ' ' + comboNomeDoProduto.Text;
+
+    ParamByName('pTamanhoProduto').AsString := comboTamanhoDoProduto.Text;
+    ParamByName('pValorProduto').AsFloat := valor_produto;
+    ParamByName('pObsProduto').AsString := editObservacoes.text;
+    execsql;
+    end;
+end;
+
+procedure TformCadastrarNovoPedido.comboTiposDeProdutoClick(Sender: TObject);
+begin
+  comboNomeDoProduto.Items.Clear;
+  comboTamanhoDoProduto.Items.Clear;
+
+  alteraNomeDoProduto('Torta doce', 'tortas_doces', 'precos_tortas_doces');
+  alteraNomeDoProduto('Torta salgada', 'tortas_salgadas',
+                                                      'precos_tortas_salgadas');
+  alteraNomeDoProduto('Sobremesa', 'sobremesas', 'precos_sobremesa');
+end;
+
+procedure TformCadastrarNovoPedido.dadosGridCadastroProdutos;
+var
+  numero_linhas : integer;
+begin
+  //Faz com que no DBgrid mostre somente os produtos daquele cliente(ID)
+  with dm.qTabelaProdutos do
+  begin
+    sql.clear;
+    sql.add('select * from cadastro_produtos where id_cliente = :pIdCliente');
+    ParamByName('pIdCliente').Asinteger := id_cliente;
+    open;
+    FetchAll;
+    numero_linhas := RecordCount;
+    lblTotalDeProdutos.caption := IntToStr(numero_linhas);
+    gridCadastroProdutos.DataSource := dm.dsTabelaProdutos;
+  end;
+end;
+
+procedure TformCadastrarNovoPedido.deletaPedidoIncompleto;
+begin
+  with dm.qCadastroProdutos do
+  begin
+    descobreIdCliente();
+    sql.Clear;
+    sql.Add('DELETE FROM pedidos where id = :pIdCliente');
+    ParamByName('pIdCliente').AsInteger := id_cliente;
+    ExecSQL;
+  end;
+end;
+
+procedure TformCadastrarNovoPedido.descobreIdCliente;
+begin
+  with dm.qCadastroProdutos do
+  begin
+    Sql.clear;
+    Sql.add('select id from pedidos where nome = :pNomeCliente');
+    ParamByName('pNomeCliente').AsString := editNomeCliente.text;
+    Open;
+    Last;
+    id_cliente := dm.qCadastroProdutos['id'];
+  end;
+end;
+
+procedure TformCadastrarNovoPedido.editTelefoneClienteClick(Sender: TObject);
+begin
+  editTelefoneCliente.EditMask :=  '(99) 99999-9999;1;_';
+end;
+
+procedure TformCadastrarNovoPedido.limpaCamposPageProdutos;
+begin
+  comboTiposDeProduto.ItemIndex := -1;
+  comboNomeDoProduto.ItemIndex := -1;
+  comboTamanhoDoProduto.ItemIndex := -1;
+  editObservacoes.text := '';
+  lblTotalDeProdutos.Caption := '-';
+  lblValorTotal.Caption := '-';
+  btFinalizarPedido.Enabled := False;
+  btCancelarPedido.Enabled := False;
+  btAdicionarProduto.Enabled := False;
+  editObservacoes.Enabled := False;
+  comboTiposDeProduto.Enabled := False;
+  comboNomeDoProduto.Enabled := False;
+  comboTamanhoDoProduto.Enabled := False;
+
+  apagaGridCadastroProdutos();
+end;
+
+procedure TformCadastrarNovoPedido.FormActivate(Sender: TObject);
+begin
+//Define o timer da entrega para 00:00 pois ele não salva se eu setar no design
+  horaEntrega.Time := 0000;
+
+  tipoProdutoComboBox();
+end;
+
+procedure TformCadastrarNovoPedido.insereDadosPageCadastro;
+var
+  datahora : String;
+begin
+  with dm.qPedidos do
+  begin
+    sql.Clear;
+    sql.ADD('insert into pedidos(nome, data, data_entrega, telefone, endereco)values(:pNomeCliente, :pDataPedido, :pDataEntrega, :pTelefoneCliente, :pEndereco)');
+    ParamByName('pNomeCliente').AsString := editNomeCliente.Text;
+    ParamByName('pDataPedido').AsDate := date();
+    datahora := DateToStr(dataEntrega.Date) + TimeToStr(horaEntrega.Time);
+    ParamByName('pDataEntrega').AsDateTime := StrToDateTime(datahora);
+    ParamByName('pTelefoneCliente').AsString := editTelefoneCliente.Text;
+    ParamByName('pEndereco').AsString := editEnderecoCliente.Text;
+    ExecSQL;
+  end;
+
+end;
+
+procedure TformCadastrarNovoPedido.limpaCamposPageCadastro;
+begin
+  editNomeCliente.text := '';
+  horaEntrega.time := 0000;
+  editTelefoneCliente.Text := '';
+  rdbtClienteRetira.ItemIndex := 1;
+  editEnderecoCliente.text := '';
+  editTelefoneCliente.EditMask := '';
+end;
+
+procedure TformCadastrarNovoPedido.rdbtClienteRetiraClick(Sender: TObject);
+begin
+//Faz a condição do RadioButton para os campos de endereço aparecerem
+  case rdbtClienteRetira.ItemIndex of
+  0:
+  begin
+   editEnderecoCliente.Enabled := False;
+   lblEnderecoCliente.Enabled := False;
+  end;
+  1:
+  begin
+   editEnderecoCliente.Enabled := True;
+   lblEnderecoCliente.Enabled := True;
+  end;
+  end;
+  limpaCamposPageProdutos();
+
+end;
+
+procedure TformCadastrarNovoPedido.renovaCamposPageProdutos;
+begin
+  comboTiposDeProduto.ItemIndex := -1;
+  comboNomeDoProduto.Items.clear;
+  comboTamanhoDoProduto.Items.Clear;
+  editObservacoes.Text := '';
+end;
+
+procedure TformCadastrarNovoPedido.somaPrecosCadastroProdutos;
+var
+  soma_dos_valores : real;
+begin
+  //Faz a alteração dos labels de Total de produtos e Valor total correspondentes
+  with dm.qCalculaSomaValores do
+  begin
+    sql.clear;
+    sql.add('select valor from cadastro_produtos where'
+    + ' id_cliente = :pIdCliente');
+    ParamByName('pIdCliente').Asinteger := id_cliente;
+    open;
+    first;
+
+    while not dm.qCalculaSomaValores.Eof do
+    begin
+      soma_dos_valores := soma_dos_valores + dm.qCalculaSomaValores['valor'];
+      dm.qCalculaSomaValores.Next;
+    end;
+    lblValorTotal.Caption := 'R$ '+floattostr(soma_dos_valores)+',00';
+  end;
+end;
+
+procedure TformCadastrarNovoPedido.tipoProdutoComboBox;
+begin
+  //Adiciona os tipos de produto no comboBox, buscando no DATABASE
+  with dm.qPedidos do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Text := 'select * from tipos_de_produto';
+    Open;
+    dm.qPedidos.First;
+
+    while not dm.qPedidos.Eof do
+    begin
+      comboTiposDeProduto.Items.add(dm.qPedidos['tipo']);
+      dm.qPedidos.Next;
+    end;
+  end;
+end;
+
+procedure TformCadastrarNovoPedido.validaCbTiposDeProdutoVazia;
+begin
+  if (comboNomeDoProduto.Text = '') or (comboTiposDeProduto.Text = '') or
+                (comboTamanhoDoProduto.Text = '') then
+  begin
+    Application.MessageBox('Preencha todos os dados!', 'Dados incompletos',
+                   MB_ICONEXCLAMATION + MB_OK);
+    abort;
+  end;
+end;
+
+end.

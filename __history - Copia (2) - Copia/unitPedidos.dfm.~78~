@@ -1,0 +1,247 @@
+object formPedidos: TformPedidos
+  Left = 0
+  Top = 0
+  BorderIcons = [biSystemMenu, biMaximize]
+  BorderStyle = bsSingle
+  Caption = 'Pedidos'
+  ClientHeight = 1051
+  ClientWidth = 1914
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poDesktopCenter
+  WindowState = wsMaximized
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Label1: TLabel
+    Left = 100
+    Top = 64
+    Width = 29
+    Height = 13
+    Caption = 'Filtros'
+  end
+  object lblFiltroPesquisa: TLabel
+    Left = 320
+    Top = 64
+    Width = 3
+    Height = 13
+  end
+  object lblDadosDosPedidos: TLabel
+    Left = 50
+    Top = 144
+    Width = 134
+    Height = 19
+    Caption = 'Dados dos pedidos'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label2: TLabel
+    Left = 1010
+    Top = 144
+    Width = 63
+    Height = 19
+    Caption = 'Produtos'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+  end
+  object gridHistoricoPedidos: TDBGrid
+    Left = 50
+    Top = 177
+    Width = 860
+    Height = 720
+    DataSource = DM.dsHistoricoPedidos
+    TabOrder = 0
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+    TitleFont.Style = []
+    OnCellClick = gridHistoricoPedidosCellClick
+    OnDrawColumnCell = gridHistoricoPedidosDrawColumnCell
+    OnKeyDown = gridHistoricoPedidosKeyDown
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'id'
+        Title.Caption = 'ID'
+        Width = 23
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'nome'
+        Title.Caption = 'Nome'
+        Width = 152
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'data'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'Data de encomenda'
+        Width = 101
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'data_entrega'
+        Title.Alignment = taCenter
+        Title.Caption = 'Data de entrega'
+        Width = 109
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'telefone'
+        Title.Alignment = taCenter
+        Title.Caption = 'Telefone'
+        Width = 87
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'endereco'
+        Title.Alignment = taCenter
+        Title.Caption = 'Endere'#231'o'
+        Width = 400
+        Visible = True
+      end>
+  end
+  object cbTipoPesquisa: TComboBox
+    Left = 100
+    Top = 88
+    Width = 145
+    Height = 21
+    TabOrder = 1
+    Text = 'Tipo da pesquisa'
+    OnChange = cbTipoPesquisaChange
+    Items.Strings = (
+      'ID'
+      'Nome'
+      'Telefone'
+      'Endere'#231'o')
+  end
+  object editLabelPesquisa: TMaskEdit
+    Left = 320
+    Top = 88
+    Width = 113
+    Height = 21
+    Enabled = False
+    TabOrder = 2
+    Text = ''
+    OnChange = editLabelPesquisaChange
+  end
+  object gridHistoricoProdutos: TDBGrid
+    Left = 1010
+    Top = 177
+    Width = 860
+    Height = 720
+    DataSource = DM.dsHistoricoProdutos
+    TabOrder = 3
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+    TitleFont.Style = []
+    OnDrawColumnCell = gridHistoricoProdutosDrawColumnCell
+    OnKeyDown = gridHistoricoProdutosKeyDown
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'id_cliente'
+        ReadOnly = True
+        Title.Caption = 'ID Cliente'
+        Width = 53
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'nome_cliente'
+        ReadOnly = True
+        Title.Caption = 'Nome Cliente'
+        Width = 169
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'nome'
+        ReadOnly = True
+        Title.Caption = 'Tipo'
+        Width = 269
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'tamanho'
+        ReadOnly = True
+        Title.Caption = 'Tamanho'
+        Width = 79
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'valor'
+        ReadOnly = True
+        Title.Caption = 'Valor'
+        Width = 55
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'observacoes'
+        Title.Caption = 'Observa'#231#245'es'
+        Visible = True
+      end>
+  end
+  object btImprimirPedido: TButton
+    Left = 1010
+    Top = 86
+    Width = 91
+    Height = 25
+    Caption = 'Imprimir pedido'
+    TabOrder = 4
+    OnClick = btImprimirPedidoClick
+  end
+  object DBNavigator1: TDBNavigator
+    Left = 736
+    Top = 146
+    Width = 174
+    Height = 25
+    DataSource = DM.dsHistoricoPedidos
+    VisibleButtons = [nbDelete, nbPost, nbRefresh]
+    ConfirmDelete = False
+    TabOrder = 5
+  end
+  object DBNavigator2: TDBNavigator
+    Left = 1696
+    Top = 146
+    Width = 174
+    Height = 25
+    DataSource = DM.dsHistoricoProdutos
+    VisibleButtons = [nbDelete, nbPost, nbRefresh]
+    ConfirmDelete = False
+    TabOrder = 6
+  end
+  object btPedidosParaSemana: TButton
+    Left = 736
+    Top = 59
+    Width = 145
+    Height = 50
+    Caption = 'Pedidos para essa semana'
+    TabOrder = 7
+    OnClick = btPedidosParaSemanaClick
+  end
+end

@@ -1,0 +1,14 @@
+program Project_sistema_mae;
+
+uses
+  Vcl.Forms,
+  unitMain in 'unitMain.pas' {formPrincipal};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TformPrincipal, formPrincipal);
+  Application.Run;
+end.

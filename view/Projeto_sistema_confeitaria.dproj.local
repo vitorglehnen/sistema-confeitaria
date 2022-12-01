@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2022/10/20 10:10:49.000.264,=C:\Users\vitor\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/10/20 10:14:04.000.799,=C:\Users\vitor\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/10/20 10:25:15.000.681,=C:\Users\vitor\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/10/21 15:24:27.000.522,=C:\Users\vitor\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/10/21 15:30:55.000.796,C:\Users\vitor\Desktop\sistema_mae\unitMain.dfm=C:\Users\vitor\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2022/10/21 15:30:55.000.796,C:\Users\vitor\Desktop\sistema_mae\unitMain.pas=C:\Users\vitor\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2022/10/21 15:31:04.000.400,C:\Users\vitor\Desktop\sistema_mae\Project_sistema_mae.dproj=C:\Users\vitor\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2022/10/21 15:34:28.000.419,=C:\Users\vitor\Desktop\sistema_mae\Unit1.pas</Transaction>
+    <Transaction>2022/10/21 15:34:34.000.721,=C:\Users\vitor\Desktop\sistema_mae\Unit2.pas</Transaction>
+    <Transaction>2022/10/21 15:34:37.000.103,=C:\Users\vitor\Desktop\sistema_mae\Unit3.pas</Transaction>
+    <Transaction>2022/10/21 15:36:55.000.899,C:\Users\vitor\Desktop\sistema_mae\unitEditarCardapio.dfm=C:\Users\vitor\Desktop\sistema_mae\Unit3.dfm</Transaction>
+    <Transaction>2022/10/21 15:36:55.000.899,C:\Users\vitor\Desktop\sistema_mae\unitEditarCardapio.pas=C:\Users\vitor\Desktop\sistema_mae\Unit3.pas</Transaction>
+    <Transaction>2022/10/21 15:37:03.000.241,C:\Users\vitor\Desktop\sistema_mae\unitPedidos.dfm=C:\Users\vitor\Desktop\sistema_mae\Unit2.dfm</Transaction>
+    <Transaction>2022/10/21 15:37:03.000.241,C:\Users\vitor\Desktop\sistema_mae\unitPedidos.pas=C:\Users\vitor\Desktop\sistema_mae\Unit2.pas</Transaction>
+    <Transaction>2022/10/21 15:37:15.000.362,C:\Users\vitor\Desktop\sistema_mae\unitCadastrarNovoPedido.pas=C:\Users\vitor\Desktop\sistema_mae\Unit1.pas</Transaction>
+    <Transaction>2022/10/21 15:37:15.000.362,C:\Users\vitor\Desktop\sistema_mae\unitCadastrarNovoPedido.dfm=C:\Users\vitor\Desktop\sistema_mae\Unit1.dfm</Transaction>
+    <Transaction>2022/10/21 23:00:01.000.816,=C:\Users\vitor\Desktop\sistema_mae\Unit1.pas</Transaction>
+    <Transaction>2022/10/22 00:05:55.000.264,C:\Users\vitor\Desktop\sistema_mae\unitDM.dfm=C:\Users\vitor\Desktop\sistema_mae\Unit1.dfm</Transaction>
+    <Transaction>2022/10/22 00:05:55.000.264,C:\Users\vitor\Desktop\sistema_mae\unitDM.pas=C:\Users\vitor\Desktop\sistema_mae\Unit1.pas</Transaction>
+    <Transaction>2022/11/23 14:33:19.000.893,=C:\Users\vitor\OneDrive\Área de Trabalho\Delphi\sistema_mae\view\Unit1.pas</Transaction>
+    <Transaction>2022/11/23 14:40:42.000.073,=C:\Users\vitor\OneDrive\Área de Trabalho\Delphi\sistema_mae\view\Unit2.pas</Transaction>
+    <Transaction>2022/11/30 22:02:43.768,C:\Users\vitor\OneDrive\Área de Trabalho\Delphi\sistema_mae\view\Projeto_sistema_confeitaria.dproj=C:\Users\vitor\OneDrive\Área de Trabalho\Delphi\sistema_mae\view\Project_sistema_mae.dproj</Transaction>
+  </Transactions>
+</BorlandProject>

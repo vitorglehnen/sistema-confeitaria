@@ -1,0 +1,19 @@
+program Project_sistema_mae;
+
+uses
+  Vcl.Forms,
+  unitMain in 'unitMain.pas' {formPrincipal},
+  unitCadastrarNovoPedido in 'unitCadastrarNovoPedido.pas' {formCadastrarNovoPedido},
+  unitPedidos in 'unitPedidos.pas' {formPedidos},
+  unitEditarCardapio in 'unitEditarCardapio.pas' {formEditarCardapio},
+  unitDM in 'unitDM.pas' {DM: TDataModule};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TformPrincipal, formPrincipal);
+  Application.CreateForm(TDM, DM);
+  Application.Run;
+end.

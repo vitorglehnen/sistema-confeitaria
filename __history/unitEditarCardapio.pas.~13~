@@ -1,0 +1,59 @@
+unit unitEditarCardapio;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids,
+  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.DBCtrls;
+
+type
+  TformEditarCardapio = class(TForm)
+    cbTipoCardapio: TComboBox;
+    Label1: TLabel;
+    gridEditarCardapio: TDBGrid;
+    DBNavigator1: TDBNavigator;
+    procedure cbTipoCardapioChange(Sender: TObject);
+    procedure validaTipoCardapio(nomeTabela : string);
+    procedure FormActivate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  formEditarCardapio: TformEditarCardapio;
+
+implementation
+
+{$R *.dfm}
+
+uses unitDM;
+
+procedure TformEditarCardapio.cbTipoCardapioChange(Sender: TObject);
+begin
+  case cbTipoCardapio.ItemIndex of
+  0: validaTipoCardapio('precos_tortas_salgadas');
+  1: validaTipoCardapio('precos_tortas_doces');
+  2: validaTipoCardapio('precos_sobremesa');
+  end;
+end;
+
+procedure TformEditarCardapio.FormActivate(Sender: TObject);
+begin
+  ActiveControl := nil;
+end;
+
+procedure TformEditarCardapio.validaTipoCardapio(nomeTabela : String);
+begin
+  with dm.qEditarCardapio do
+  begin
+    SQL.clear;
+    SQL.add('SELECT * FROM ' + nomeTabela);
+    open;
+    gridEditarCardapio.DataSource := dm.dsEditarCardapio;
+  end;
+end;
+
+end.

@@ -1,0 +1,16 @@
+program Project1;
+
+uses
+  Vcl.Forms,
+  Unit1 in 'Unit1.pas' {formMain},
+  UnitCadastrarNovoPedido in 'UnitCadastrarNovoPedido.pas' {formCadastrarNovoPedido},
+  UnitPedidos in 'UnitPedidos.pas' {formPedidos},
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TformMain, formMain);
+  Application.Run;
+end.
