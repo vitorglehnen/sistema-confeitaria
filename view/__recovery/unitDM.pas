@@ -1,0 +1,119 @@
+unit unitDM;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.MySQL,
+  FireDAC.Phys.MySQLDef, FireDAC.VCLUI.Wait, FireDAC.Stan.Param, FireDAC.DatS,
+  FireDAC.DApt.Intf, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client, frxClass, frxDBSet, Dialogs, Windows, Messages, Controls;
+
+type
+  TDM = class(TDataModule)
+    dsPedidos: TDataSource;
+    Conexao: TFDConnection;
+    qNomeDoProduto: TFDQuery;
+    qPedidos: TFDQuery;
+    qTamanhoDoProduto: TFDQuery;
+    dsCadastroProdutos: TDataSource;
+    qCadastroProdutos: TFDQuery;
+    qTabelaProdutos: TFDQuery;
+    dsTabelaProdutos: TDataSource;
+    qCalculaSomaValores: TFDQuery;
+    dsCalculaSomaValores: TDataSource;
+    relqTabelaProdutos: TfrxReport;
+    DataSet_qTabelaProdutos: TfrxDBDataset;
+    qTabelaProdutosid: TFDAutoIncField;
+    qTabelaProdutosid_cliente: TIntegerField;
+    qTabelaProdutosnome: TStringField;
+    qTabelaProdutostamanho: TStringField;
+    qTabelaProdutosvalor: TBCDField;
+    qTabelaProdutosobservacoes: TStringField;
+    qTabelaProdutosnome_cliente: TStringField;
+    qHistoricoPedidos: TFDQuery;
+    dsHistoricoPedidos: TDataSource;
+    qHistoricoProdutos: TFDQuery;
+    dsHistoricoProdutos: TDataSource;
+    qHistoricoProdutosid_cliente: TIntegerField;
+    qHistoricoProdutosnome_cliente: TStringField;
+    qHistoricoProdutosnome: TStringField;
+    qHistoricoProdutostamanho: TStringField;
+    qHistoricoProdutosvalor: TBCDField;
+    qHistoricoProdutosobservacoes: TStringField;
+    qDadosParaRel: TFDQuery;
+    dsDadosParaRel: TDataSource;
+    DataSet_qDadosParaRel: TfrxDBDataset;
+    qBuscaPrecoProdutoCadastro: TFDQuery;
+    DataSource1: TDataSource;
+    qEditarCardapioPrecos: TFDQuery;
+    dsEditarCardapioPrecos: TDataSource;
+    dsEditarCardapioSabores: TDataSource;
+    qEditarCardapioSabores: TFDQuery;
+    qEditarCardapioPrecostamanho: TStringField;
+    qEditarCardapioPrecospreco: TBCDField;
+    qHistoricoPedidosid: TFDAutoIncField;
+    qHistoricoPedidosnome: TStringField;
+    qHistoricoPedidosdata: TSQLTimeStampField;
+    qHistoricoPedidosdata_entrega: TDateField;
+    qHistoricoPedidoshora_entrega: TTimeField;
+    qHistoricoPedidostelefone: TStringField;
+    qHistoricoPedidosendereco: TStringField;
+    qDadosParaRelid: TFDAutoIncField;
+    qDadosParaRelnome: TStringField;
+    qDadosParaReldata: TSQLTimeStampField;
+    qDadosParaReldata_entrega: TDateField;
+    qDadosParaRelhora_entrega: TTimeField;
+    qDadosParaReltelefone: TStringField;
+    qDadosParaRelendereco: TStringField;
+    procedure qHistoricoPedidosBeforeDelete(DataSet: TDataSet);
+    procedure qHistoricoProdutosBeforeDelete(DataSet: TDataSet);
+    procedure deletarPedido;
+    procedure qEditarCardapioPrecosBeforeDelete(DataSet: TDataSet);
+    procedure qEditarCardapioSaboresBeforeDelete(DataSet: TDataSet);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  DM: TDM;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+uses unitPedidos;
+
+{$R *.dfm}
+
+
+procedure TDM.deletarPedido;
+begin
+  if MessageDlg('Deseja deletar este registro?', mtconfirmation, [mbYes, mbNo], 0) = mrNo then
+    abort;
+end;
+
+procedure TDM.qEditarCardapioPrecosBeforeDelete(DataSet: TDataSet);
+begin
+  deletarPedido();
+end;
+
+procedure TDM.qEditarCardapioSaboresBeforeDelete(DataSet: TDataSet);
+begin
+  deletarPedido();
+end;
+
+procedure TDM.qHistoricoPedidosBeforeDelete(DataSet: TDataSet);
+begin
+  deletarPedido();
+end;
+
+procedure TDM.qHistoricoProdutosBeforeDelete(DataSet: TDataSet);
+begin
+  deletarPedido();
+end;
+
+end.
